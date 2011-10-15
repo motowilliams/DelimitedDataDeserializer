@@ -40,10 +40,10 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="xunit">
-      <HintPath>..\ConsoleApplication2\packages\xunit.1.8.0.1549\lib\xunit.dll</HintPath>
+      <HintPath>..\packages\xunit.1.8.0.1549\lib\xunit.dll</HintPath>
     </Reference>
     <Reference Include="xunit.extensions">
-      <HintPath>..\ConsoleApplication2\packages\xunit.extensions.1.8.0.1549\lib\xunit.extensions.dll</HintPath>
+      <HintPath>..\packages\xunit.extensions.1.8.0.1549\lib\xunit.extensions.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -63,15 +63,14 @@
     <Compile Include="Concrete\when_inputs_nullable_valid_and_ouput_uses_data_annotations.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DataFileDeserializer\DelimitedDataDeserializer.csproj">
+    <ProjectReference Include="..\DelimitedDataDeserializer\DelimitedDataDeserializer.csproj">
       <Project>{3F25B8B2-571A-42E9-8934-D51C56B2B85D}</Project>
       <Name>DelimitedDataDeserializer</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
