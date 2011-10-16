@@ -11,9 +11,9 @@ namespace DelimitedDataDeserializer
 		private readonly bool _stripBoundingQuotes;
 		private readonly string[] _fields;
 
-		public DynamicDelimitedDataReader(string[] fields, char delimeter = '\t', bool stripBoundingQuotes = true)
+		public DynamicDelimitedDataReader(IEnumerable<string> fields, char delimeter = '\t', bool stripBoundingQuotes = true)
 		{
-			_fields = fields;
+			_fields = fields.ToArray();
 			_delimeter = delimeter;
 			_stripBoundingQuotes = stripBoundingQuotes;
 		}
@@ -37,9 +37,9 @@ namespace DelimitedDataDeserializer
 				return null;
 
 			var splitLine = line.Split(_delimeter);
-
+			
 			if (splitLine.Count() != _fields.Count())
-				throw new ApplicationException("Invalid field count per configuration, expecting {0} fields".FormatWith(_fields.Count()));
+				throw new ApplicationException("Invalid field count per configuration, expecting {0} fields".Format(_fields.Count()));
 			
 			if (_stripBoundingQuotes)
 				splitLine = splitLine.Select(x => x.RemoveBoundingQuote()).ToArray();

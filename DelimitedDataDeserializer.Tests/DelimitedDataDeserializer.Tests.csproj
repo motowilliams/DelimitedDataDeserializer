@@ -51,6 +51,7 @@
     <Compile Include="Concrete\when_order_attributes_are_invalid.cs" />
     <Compile Include="Dynamic\DynamicContext.cs" />
     <Compile Include="Dynamic\when_inputs_contain_quoted_fields.cs" />
+    <Compile Include="FixedWidth\when_inputs_are_valid.cs" />
     <Compile Include="TestFileImportWithNoAttributes.cs" />
     <Compile Include="InvalidTestFileImport.cs" />
     <Compile Include="SingleObject.cs" />

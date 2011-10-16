@@ -20,7 +20,7 @@ namespace DelimitedDataDeserializer
 			var orderAttribute = propertyInfo.GetCustomAttributes(typeof(OrderAttribute), true).Cast<OrderAttribute>().FirstOrDefault();
 
 			if (orderAttribute == null)
-				throw new ValidationException("Destination property ({0}) does not have Order attribute".FormatWith(propertyInfo.Name));
+				throw new ValidationException(StringExtensions.Format("Destination property ({0}) does not have Order attribute", propertyInfo.Name));
 
 			return orderAttribute.Order;
 		}

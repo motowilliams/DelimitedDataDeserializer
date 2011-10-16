@@ -5,7 +5,9 @@ namespace DelimitedDataDeserializer
 {
 	public static class StringExtensions
 	{
-		public static string FormatWith(this string format, params object[] args)
+		private const char QuoteChar = '\"';
+
+		public static string Format(this string format, params object[] args)
 		{
 			return String.Format(format, args);
 		}
@@ -15,12 +17,10 @@ namespace DelimitedDataDeserializer
 			if (String.IsNullOrWhiteSpace(lineDataItem))
 				return lineDataItem;
 
-			const char _quoteChar = '\"';
-
-			if (lineDataItem.First() == _quoteChar)
+			if (lineDataItem.First() == QuoteChar)
 				lineDataItem = lineDataItem.Substring(1);
 
-			if (lineDataItem.Last() == _quoteChar)
+			if (lineDataItem.Last() == QuoteChar)
 				lineDataItem = lineDataItem.Substring(0, lineDataItem.Length - 1);
 			
 			return lineDataItem;
