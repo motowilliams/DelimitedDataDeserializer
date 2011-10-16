@@ -1,15 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
 using Xunit;
 
 namespace DelimitedDataDeserializer.Tests.Dynamic
 {
-	public class when_inputs_are_valid
+	public class when_inputs_are_valid : DynamicContext
 	{
-		readonly string[] _fields = new[] { "Field01", "Field02", "Field03" };
-		readonly string[] _values = new[] { "Value01", "Value02", "Value03" };
 
 		[Fact]
 		public void returns_valid_dynamic_for_single_valid_input()
@@ -39,17 +35,6 @@ namespace DelimitedDataDeserializer.Tests.Dynamic
 
 			//Assert
 			Assert.Equal(expected, actual);
-		}
-
-		private dynamic InitializeDynamic(string[] fields, string[] values)
-		{
-			dynamic parseLine = new ExpandoObject();
-			for (var i = 0; i < fields.Count(); i++)
-			{
-				var p = parseLine as IDictionary<string, object>;
-				p[_fields[i]] = values[i];
-			}
-			return parseLine;
 		}
 	}
 }

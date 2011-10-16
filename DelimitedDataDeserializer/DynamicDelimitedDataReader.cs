@@ -8,12 +8,14 @@ namespace DelimitedDataDeserializer
 	public class DynamicDelimitedDataReader
 	{
 		private readonly char _delimeter;
+		private readonly bool _stripBoundingQuotes;
 		private readonly string[] _fields;
 
-		public DynamicDelimitedDataReader(string[] fields, char delimeter = '\t')
+		public DynamicDelimitedDataReader(string[] fields, char delimeter = '\t', bool stripBoundingQuotes = true)
 		{
 			_fields = fields;
 			_delimeter = delimeter;
+			_stripBoundingQuotes = stripBoundingQuotes;
 		}
 
 		public IEnumerable<dynamic> ParseLines(IEnumerable<string> fileData)
@@ -38,6 +40,9 @@ namespace DelimitedDataDeserializer
 
 			if (splitLine.Count() != _fields.Count())
 				throw new ApplicationException("Invalid field count per configuration, expecting {0} fields".FormatWith(_fields.Count()));
+			
+			if (_stripBoundingQuotes)
+				splitLine = splitLine.Select(x => x.RemoveBoundingQuote()).ToArray();
 
 			dynamic parseLine = new ExpandoObject();
 

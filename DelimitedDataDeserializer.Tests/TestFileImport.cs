@@ -28,6 +28,11 @@ namespace DelimitedDataDeserializer.Tests
 		[Order(4)]
 		public DateTime EventDate { get; set; }
 
+		public override string ToString()
+		{
+			return string.Format("Name: {0}, Age: {1}, Wage: {2}, EventDate: {3}", Name, Age, Wage, EventDate);
+		}
+
 		public bool Equals(TestFileImport other)
 		{
 			if (ReferenceEquals(null, other)) return false;

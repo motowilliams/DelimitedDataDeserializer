@@ -47,6 +47,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Concrete\when_inputs_contain_quoted_fields.cs" />
     <Compile Include="Concrete\when_order_attributes_are_invalid.cs" />
     <Compile Include="TestFileImportWithNoAttributes.cs" />
     <Compile Include="InvalidTestFileImport.cs" />

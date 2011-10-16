@@ -12,11 +12,13 @@ namespace DelimitedDataDeserializer
 		private readonly Type _type;
 		private readonly PropertyInfo[] _propertyInfoCollection;
 		private readonly char _delimeter;
+		private readonly bool _stripBoundingQuotes;
 		private IOrderedEnumerable<AnnotatedProperties> _annotatedProperties;
 
-		public DelimitedDataReader(char delimeter = '\t')
+		public DelimitedDataReader(char delimeter = '\t', bool stripBoundingQuotes = true)
 		{
 			_delimeter = delimeter;
+			_stripBoundingQuotes = stripBoundingQuotes;
 			_type = typeof(T);
 			_propertyInfoCollection = _type.GetProperties();
 		}
@@ -39,6 +41,9 @@ namespace DelimitedDataDeserializer
 			// Validate the target class has the correct [Order(x)] attribute value per the properties it contains
 			if (_annotatedProperties.Count().Factorial() != _annotatedProperties.Select(x => x.Order).Factorial())
 				return LineDataResult("Order attribute sequence problem on {0}", _type.Name);
+
+			if (_stripBoundingQuotes)
+				lineDataItems = lineDataItems.Select(x => x.RemoveBoundingQuote()).ToArray();
 
 			T readLine = ReadSplitLine(lineDataItems);
 

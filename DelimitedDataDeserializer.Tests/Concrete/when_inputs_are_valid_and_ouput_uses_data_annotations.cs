@@ -5,6 +5,10 @@ using Xunit;
 
 namespace DelimitedDataDeserializer.Tests.Concrete
 {
+	public class when_inputs_contain_quoted_fielfs
+	{
+	}
+
 	public class when_inputs_are_valid_and_ouput_uses_data_annotations
 	{
 		[Fact]
