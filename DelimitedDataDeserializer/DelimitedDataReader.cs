@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace DelimitedDataDeserializer
 {
-	public class DelimitedDataReader<T> where T : new()
+	public class DelimitedDataReader<T> where T : new() 
 	{
 		private readonly Type _type;
 		private readonly PropertyInfo[] _propertyInfoCollection;
@@ -53,7 +53,7 @@ namespace DelimitedDataDeserializer
 			return fileDataResult.AsValidatedResult();
 		}
 
-		public T ReadSplitLine(string[] splitLine)
+		private T ReadSplitLine(string[] splitLine)
 		{
 			T item = new T();
 

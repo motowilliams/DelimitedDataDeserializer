@@ -41,7 +41,9 @@
   <ItemGroup>
     <Compile Include="DelimitedDataReader.cs" />
     <Compile Include="DynamicDelimitedDataReader.cs" />
+    <Compile Include="FixedWidthAttribute.cs" />
     <Compile Include="FixedWidthDataReader.cs" />
+    <Compile Include="FixedWidthDynamicDataReader.cs" />
     <Compile Include="MathExtensions.cs" />
     <Compile Include="OrderAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

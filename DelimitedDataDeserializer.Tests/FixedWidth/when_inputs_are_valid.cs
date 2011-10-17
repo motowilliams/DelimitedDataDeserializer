@@ -5,10 +5,10 @@ using Xunit;
 
 namespace DelimitedDataDeserializer.Tests.FixedWidth
 {
-	public class when_inputs_are_valid 
+	public class when_inputs_are_valid_for_dynamic
 	{
 		[Fact]
-		public void returns_valid_dynamic_for_single_valid_input()
+		public void returns_valid_dynamic_for_valid_input()
 		{
 			//Arrange
 			var fixedWidthFields = new List<Tuple<int, string, int>>();
@@ -16,7 +16,7 @@ namespace DelimitedDataDeserializer.Tests.FixedWidth
 			fixedWidthFields.Add(Tuple.Create(2, "Field02", 5));
 			fixedWidthFields.Add(Tuple.Create(3, "Field03", 20));
 
-			var reader = new FixedWidthDataReader(fixedWidthFields);
+			var reader = new FixedWidthDynamicDataReader(fixedWidthFields);
 			dynamic expected = new ExpandoObject();
 			expected.Field01 = "FirstName";
 			expected.Field02 = "25";
@@ -39,7 +39,7 @@ namespace DelimitedDataDeserializer.Tests.FixedWidth
 			fixedWidthFields.Add(Tuple.Create(3, "Field03", 20));
 			string expected = "Field01   Field02Field03             ";
 
-			var reader = new FixedWidthDataReader(fixedWidthFields);
+			var reader = new FixedWidthDynamicDataReader(fixedWidthFields);
 			
 			//Act
 			string actual = reader.PrintHeader();

@@ -1,44 +1,106 @@
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
+using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
+using System.Reflection;
 
 namespace DelimitedDataDeserializer
 {
-	public class FixedWidthDataReader
+	public class FixedWidthDataReader<T> where T : new()
 	{
-		private readonly IEnumerable<Tuple<int, string, int>> _fields;
+		private readonly Type _type;
+		private readonly PropertyInfo[] _propertyInfoCollection;
+		private IOrderedEnumerable<AnnotatedProperties> _annotatedProperties;
 
-		public FixedWidthDataReader(IEnumerable<Tuple<int, string, int>> fields)
+		public FixedWidthDataReader()
 		{
-			_fields = fields;
+			_type = typeof(T);
+			_propertyInfoCollection = _type.GetProperties();
 		}
 
-		public dynamic ParseLine(string line)
+		public Tuple<ICollection<ValidationResult>, T> ParseLine(string lineData)
 		{
-			dynamic parseLine = new ExpandoObject();
+			if (lineData == null)
+				return LineDataResult("lineData was null");
+
+			_annotatedProperties = _propertyInfoCollection
+				.Select( x => new AnnotatedProperties { Name = x.Name, Length = FixedWidthAttribute.GetLengthAttributeValue(x), Position = FixedWidthAttribute.GetPositionAttributeValue(x), PropertyInfo = x })
+				.OrderBy(x => x.Position);
+
+			T item = new T();
 			int index = 0;
-			
-			foreach (var field in _fields.OrderBy(x => x.Item1))
+
+			foreach (var annotatedProperty in _annotatedProperties)
 			{
-				string value = line.Substring(index, field.Item3);
-				var p = parseLine as IDictionary<string, object>;
-				p[field.Item2] = value.Trim();
-				index = index + field.Item3;
+				Type propertyType = annotatedProperty.PropertyInfo.PropertyType;
+
+				dynamic value = lineData.Substring(index, annotatedProperty.Length);
+				dynamic baseTypeValue;
+				index = index + annotatedProperty.Length;
+				
+				if (propertyType.IsNotNullable())
+				{
+					baseTypeValue = GetBaseTypeValue(propertyType, value, propertyType.IsNullable());
+				}
+				else
+				{
+					//Unwrap the Nullable generic to the basetype and set property to that
+					Type baseType = propertyType.GetGenericArguments()[0];
+					baseTypeValue = GetBaseTypeValue(baseType, value, propertyType.IsNullable());
+				}
+				annotatedProperty.PropertyInfo.SetValue(item, baseTypeValue, null);
+
 			}
 
-			return parseLine;
+			ICollection<ValidationResult> results = new Collection<ValidationResult>();
+			Tuple<ICollection<ValidationResult>, T> fileDataResult = Tuple.Create(results, item);
+
+			return fileDataResult.AsValidatedResult();
 		}
 
-		public string PrintHeader()
+		private dynamic GetBaseTypeValue(Type type, dynamic value, bool nullable)
 		{
-			var stringBuilder = new StringBuilder();
-			foreach (var field in _fields.OrderBy(x => x.Item1))
-			{
-				stringBuilder.Append(field.Item2.PadRight(field.Item3));
-			}
-			return stringBuilder.ToString();
+			MethodInfo parseMethod = type.GetMethod("TryParse", new Type[] { typeof(string), type.MakeByRefType() });
+
+			if (parseMethod == null)
+				return value.ToString().Trim();
+
+			var parameters = new object[] { value, null };
+			var success = (bool)parseMethod.Invoke(null, parameters);
+
+			// if TryParse returns true(success) return the value from the out parameter
+			if (success)
+				return parameters[1];
+
+			// if TryParse returns false(success)
+			if (nullable)
+				return null;
+
+			return parameters[1];
 		}
+
+		private class AnnotatedProperties
+		{
+			public string Name { get; set; }
+			public int Position { get; set; }
+			public int Length { get; set; }
+			public PropertyInfo PropertyInfo { get; set; }
+		}
+
+		private Tuple<ICollection<ValidationResult>, T> LineDataResult(string format, params object[] args)
+		{
+			ICollection<ValidationResult> validationResults = new List<ValidationResult> { new ValidationResult(string.Format(format, args)) };
+			Tuple<ICollection<ValidationResult>, T> readLine = Tuple.Create(validationResults, new T());
+			return readLine;
+		}
+
+		private Tuple<ICollection<ValidationResult>, T> LineDataResult(string errorMessage)
+		{
+			ICollection<ValidationResult> validationResults = new List<ValidationResult> { new ValidationResult(errorMessage) };
+			Tuple<ICollection<ValidationResult>, T> readLine = Tuple.Create(validationResults, new T());
+			return readLine;
+		}
+
 	}
 }
