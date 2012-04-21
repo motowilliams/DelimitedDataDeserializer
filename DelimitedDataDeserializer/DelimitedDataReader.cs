@@ -10,7 +10,7 @@ namespace DelimitedDataDeserializer
 	public class DelimitedDataReader<T> where T : new() 
 	{
 		private readonly Type _type;
-		private readonly PropertyInfo[] _propertyInfoCollection;
+		private readonly IEnumerable<PropertyInfo> _propertyInfoCollection;
 		private readonly char _delimeter;
 		private readonly bool _stripBoundingQuotes;
 		private IOrderedEnumerable<AnnotatedProperties> _annotatedProperties;
@@ -20,7 +20,10 @@ namespace DelimitedDataDeserializer
 			_delimeter = delimeter;
 			_stripBoundingQuotes = stripBoundingQuotes;
 			_type = typeof(T);
-			_propertyInfoCollection = _type.GetProperties();
+			var propertyInfos = new List<PropertyInfo>();
+			propertyInfos.AddRange(_type.GetProperties());
+			propertyInfos.AddRange(_type.GetProperties(BindingFlags.NonPublic));
+			_propertyInfoCollection = propertyInfos.ToArray();
 		}
 
 		public Tuple<ICollection<ValidationResult>, T> ReadLine(string lineData)
