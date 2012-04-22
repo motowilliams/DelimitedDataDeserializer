@@ -41,6 +41,7 @@ namespace DelimitedDataDeserializer.Specs
         protected static dynamic actual;
     }
 
+    [Subject(typeof(FixedWidthDynamicDataReader))]
     public class when_printing_a_fixed_width_header : FixedWidthDynamicDataReaderSpec
     {
         Because of = () =>
@@ -52,6 +53,7 @@ namespace DelimitedDataDeserializer.Specs
         protected static string actual;
     }
 
+    [Subject(typeof(FixedWidthDynamicDataReader))]
     public class when_validating_null_input 
     {
         Establish context = () =>
@@ -67,6 +69,7 @@ namespace DelimitedDataDeserializer.Specs
         protected static FixedWidthDataReader<TestFixedWidthFileImport> reader;
     }
 
+    [Subject(typeof(FixedWidthDynamicDataReader))]
     public class when_validating_existing_but_valid_input
     {
         Establish context = () =>
